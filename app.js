@@ -3,6 +3,18 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
   await login();
 });
 
+// prepare for the edit quotes section
+console.log("Setting up quote event listener");
+document.getElementById("allquotes-section").addEventListener("click", function(event) {
+    const button = event.target.closest(".edit-quote");
+    console.log("Quote button clicked");
+    if (!button) {
+        return;
+    }
+    console.log(button.dataset.id)
+    showEditQuote(button.dataset.id);
+    });
+
 // the JST token is 'stored' here for the session
 var authToken;
 
@@ -116,15 +128,11 @@ async function allQuotes() {
     }
 
     // so initial fetch did not return a 401 Unauthorized status...
-
-
     if (!res.ok) {
       // ... but something else went wrong
       const data = await res.json();
-      throw new Error(`Failed to retrieve all quotes: ${data.error}`);
-      
+      throw new Error(`Failed to retrieve all quotes: ${data.error}`); 
     }
-
     // ... and we got a 200 OK status.
     const data = await res.text();
     document.getElementById("allquotes-section").innerHTML = data;
@@ -151,28 +159,40 @@ function showSection(id) {
     document.getElementById(id).classList.remove("hidden");
 }
 
-function sizeText(containerElement) {
-  let low = 6;
-  let high = 200;
+async function showEditQuote(id) {
 
-  while (low <= high) {
-    const size = Math.floor((low + high) / 2);
+    const response = await fetch(`/api/quotes/${id}`);
+    const quote = await response.json();
 
-    textElement = containerElement.innerHTML;
+    // Put quote information into your edit form
+    document.getElementById("quote-text").value = quote.Quote;
+    let author = ""
+    if (quote.Author.Valid) {
+      author = quote.Author.String;
+    }
+    document.getElementById("quote-author").value = author;
+    document.getElementById("quote-id").value = id;
 
-    textElement.style.fontSize = size + 'px';
-
-    if (textFits()) {
-      // but can it be larger?
-      low = size + 1;
-    } else {
-      // doesn't fit, try smaller
-      high = size - 1;
-    } 
-  }
-  textElement.style.fontSize = high + 'px'
+    // Switch sections
+    showSection("edit-quote-section");
 }
 
-function textFits(element) {
-  return element.scrollHeight <= element.clientHeight;
+async function putEditedQuote(event) {
+  event.preventDefault();
+
+    quoteID = document.getElementById("quote-id").value;
+    const response = await fetch(`/api/quotes/${quoteID}`, {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          quotation: document.getElementById("quote-text").value,
+          author: document.getElementById("quote-author").value,
+          id: quoteID,
+      })
+    });
+    const responseJson = await response.json();
+    document.getElementById('edit-quote-section').innerHTML = `Success!`;
+    console.log(responseJson)
 }

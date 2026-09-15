@@ -62,7 +62,7 @@ func (apiCfg *APIConfig) handlerLogin(res http.ResponseWriter, req *http.Request
 		Email:     queriedUser.Email,
 	}
 
-	token, err := auth.MakeJWT(queriedUser.ID, apiCfg.tokenSecret, time.Minute)
+	token, err := auth.MakeJWT(queriedUser.ID, apiCfg.tokenSecret, time.Hour)
 	if err != nil {
 		respondWithError(res, http.StatusInternalServerError, err.Error())
 		return

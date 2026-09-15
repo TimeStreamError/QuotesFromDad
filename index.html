@@ -87,6 +87,15 @@
                 </div>
 
                 <div id="allquotes-section" class="hidden"></div>
+
+                <div id="edit-quote-section" class="hidden">
+                    <form onsubmit="putEditedQuote(event)">
+                    <input id="quote-text" type="text">
+                    <input id="quote-author" type="text">
+                    <input id="quote-id" type="hidden">
+                    <button type="submit">Save</button>
+                </form>
+                </div>
             </main>
         </div>
 

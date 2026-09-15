@@ -4,11 +4,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>All Quotes In Database</title>
+        <link rel="stylesheet" href="styles.css"> 
     </head>
     <body>
     <ul>
     {{ range . }}
-    <li><p>{{ .Quote }}</p><p>{{ .Author }}</p></li>
+    <li><button class="edit-quote" data-id="{{ .ID }}">{{ .Quote }}</button><p>{{ .Author }}</p></li>
     {{ end }}
     </ul>
     </body>

@@ -23,7 +23,7 @@ func (apiCfg *APIConfig) handleRefreshTokenCheck(w http.ResponseWriter, r *http.
 		return
 	}
 
-	token, err := auth.MakeJWT(dbRefreshToken.UserID, apiCfg.tokenSecret, time.Minute)
+	token, err := auth.MakeJWT(dbRefreshToken.UserID, apiCfg.tokenSecret, time.Hour)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
