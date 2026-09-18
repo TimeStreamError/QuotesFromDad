@@ -14,6 +14,7 @@ import (
 )
 
 type APIConfig struct {
+	DB                 *sql.DB
 	dbQueries          *database.Queries
 	tokenSecret        string
 	loginAuthorization string
@@ -33,6 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	apiCfg.DB = db
 	apiCfg.dbQueries = database.New(db)
 	tokenSecret := os.Getenv("TOKEN_SECRET")
 	if tokenSecret == "" {
@@ -52,7 +54,7 @@ func main() {
 	// the various path handlers
 	r.Handle("/*", http.FileServer(http.Dir(".")))
 	r.Post("/api/quotes", apiCfg.handlePutQuote)                 // put quote requires login
-	r.Get("/api/import", apiCfg.handleImportCSV)                 // import requires login
+	r.Post("/api/import/{filename}", apiCfg.handleImportCSV)     // import requires login
 	r.Get("/api/quotes", apiCfg.handleGetAllQuotes)              // all quotes requires login
 	r.Get("/random", apiCfg.handleGetRandom)                     // no login required, will use UUID id
 	r.Post("/admin/login", apiCfg.handlerLogin)                  // no login required, but user needs to be in db
@@ -60,7 +62,8 @@ func main() {
 	r.Get("/api/refresh", apiCfg.handleRefreshTokenCheck)        // called when the client gets a 401 status
 	r.Get("/api/quotes/{quote-id}", apiCfg.handleEditQuote)      // to populate edit quote screen
 	r.Put("/api/quotes/{quote-id}", apiCfg.handlePutEditedQuote) // updates the modified quote
-
+	r.Get("/api/quotes/reset", apiCfg.handleQuotesReset)         // deletes all quotes from db
+	r.Post("/api/tags", apiCfg.handleAddTag)
 	// boot up the server
 	httpServer.Addr = ":8080"
 	httpServer.Handler = r

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -18,8 +17,8 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 	}
 	payload := ErrorResponse{}
 	payload.Error = msg
+	log.Println(msg)
 	respondWithJSON(w, code, payload)
-	fmt.Println(msg)
 }
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	data, err := json.Marshal(payload)

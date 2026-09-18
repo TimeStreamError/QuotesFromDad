@@ -22,16 +22,18 @@ func (apiCfg *APIConfig) handleSignup(w http.ResponseWriter, r *http.Request) {
 	data := ParsedData{}
 	err := decoder.Decode(&data)
 	if err != nil {
-		respondWithError(w, 400, err.Error())
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	if data.Email == "" || data.Password == "" || data.Authorization == "" {
-		respondWithError(w, 400, "Email, password and authorization required")
+		respondWithError(w, http.StatusBadRequest, "Email, password and authorization required")
 		return
 	}
 
 	if data.Authorization != apiCfg.loginAuthorization {
-		respondWithError(w, 400, "Incorrect authorization")
+		respondWithError(w, http.StatusBadRequest, "Incorrect authorization")
+		return
 	}
 
 	params := database.CreateUserParams{}

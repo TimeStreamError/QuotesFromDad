@@ -15,6 +15,9 @@
                 <button>Signup</button>
                 <button>Enter Quote</button>
                 <button onclick="allQuotes()">All Quotes</button>
+                <button onclick="showImportCSV()">Import CSV</button>
+                <button onclick="quoteReset()">Reset Quote DB</button>
+                <button onclick="showAddTag()">Add Tag</button>
             </nav>
             <main>
                 <div id="home-section">
@@ -88,14 +91,22 @@
 
                 <div id="allquotes-section" class="hidden"></div>
 
-                <div id="edit-quote-section" class="hidden">
-                    <form onsubmit="putEditedQuote(event)">
-                    <input id="quote-text" type="text">
-                    <input id="quote-author" type="text">
-                    <input id="quote-id" type="hidden">
-                    <button type="submit">Save</button>
-                </form>
+                <div id="edit-quote-section" class="hidden"></div>
+
+                <div id="import-csv-section" class="hidden">
+                    <form onsubmit="importCSV(event)">
+                        <input id="filename" type="file">
+                        <button type="submit">Save</button>
+                    </form>
                 </div>
+
+                <div id="add-tag-section" class="hidden">
+                    <form onsubmit="addTag(event)">
+                        <input id="tagname" type="text">
+                        <button type="submit">Save</button>
+                    </form>
+                </div>
+
             </main>
         </div>
 

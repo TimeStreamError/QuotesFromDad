@@ -143,6 +143,10 @@ async function allQuotes() {
 
 }
 
+function showImportCSV() {
+  showSection("import-csv-section");
+}
+
 function showHome() {
   showSection("home-section");
 }
@@ -162,25 +166,18 @@ function showSection(id) {
 async function showEditQuote(id) {
 
     const response = await fetch(`/api/quotes/${id}`);
-    const quote = await response.json();
+    const data = await response.text();
 
-    // Put quote information into your edit form
-    document.getElementById("quote-text").value = quote.Quote;
-    let author = ""
-    if (quote.Author.Valid) {
-      author = quote.Author.String;
-    }
-    document.getElementById("quote-author").value = author;
-    document.getElementById("quote-id").value = id;
-
-    // Switch sections
+    document.getElementById("edit-quote-section").innerHTML = data;
     showSection("edit-quote-section");
 }
 
 async function putEditedQuote(event) {
   event.preventDefault();
+  const checkedBoxes = Array.from(document.querySelectorAll('.tag-checkbox:checked'));
+  const tagsIDs = checkedBoxes.map(tag => tag.value);
 
-    quoteID = document.getElementById("quote-id").value;
+    const quoteID = document.getElementById("quote-id").value;
     const response = await fetch(`/api/quotes/${quoteID}`, {
       method: "PUT",
       headers: {
@@ -190,9 +187,46 @@ async function putEditedQuote(event) {
           quotation: document.getElementById("quote-text").value,
           author: document.getElementById("quote-author").value,
           id: quoteID,
+          tags: tagsIDs,
       })
     });
     const responseJson = await response.json();
     document.getElementById('edit-quote-section').innerHTML = `Success!`;
     console.log(responseJson)
+}
+
+async function importCSV(event) {
+  event.preventDefault();
+  const filename = document.getElementById("filename").files[0].name;
+    const response = await fetch(`/api/import/${filename}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        filename: filename,
+      })
+    });
+  const responseStatus = await response.json();
+}
+
+async function quoteReset(event) {
+  const response = await fetch("/api/quotes/reset");
+}
+
+async function addTag(event) {
+  event.preventDefault();
+  const tagName = document.getElementById("tagname").value;
+  const response = await fetch("/api/tags", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({name: tagName,})
+  });
+  const responseData = await response.json();
+}
+
+function showAddTag() {
+  showSection("add-tag-section");
 }

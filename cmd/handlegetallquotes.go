@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/timestreamerror/capstone/internal/auth"
@@ -11,13 +10,11 @@ import (
 func (apiCfg *APIConfig) handleGetAllQuotes(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
 	if err != nil {
-		log.Printf("Failed get bearer token")
 		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 	_, err = auth.ValidateJWT(token, apiCfg.tokenSecret)
 	if err != nil {
-		log.Printf("Failed validate JWT")
 		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
@@ -25,6 +22,7 @@ func (apiCfg *APIConfig) handleGetAllQuotes(w http.ResponseWriter, r *http.Reque
 	records, err := apiCfg.dbQueries.GetAllQuotes(r.Context())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	var tmplFile = "templates/allquotes.tmpl"

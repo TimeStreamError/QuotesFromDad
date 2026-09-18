@@ -20,6 +20,11 @@ type Quote struct {
 	LastServedAt sql.NullTime
 }
 
+type QuotesTagsLink struct {
+	QuoteID uuid.UUID
+	TagID   uuid.UUID
+}
+
 type RefreshToken struct {
 	Token     string
 	CreatedAt time.Time
@@ -27,6 +32,13 @@ type RefreshToken struct {
 	UserID    uuid.UUID
 	ExpiresAt time.Time
 	RevokedAt sql.NullTime
+}
+
+type Tag struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Name      string
 }
 
 type User struct {

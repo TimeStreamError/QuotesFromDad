@@ -1,0 +1,12 @@
+
+    <form onsubmit="putEditedQuote(event)">
+        <input id="quote-text" type="text" value="{{ .Quote }}">
+        <input id="quote-author" type="text" value="{{ .Author }}">
+        <input id="quote-id" type="hidden" value="{{ .ID }}">
+        <button type="submit">Save</button>
+
+        {{ range .Tags}}
+            <p><input type="checkbox" class="tag-checkbox" name="{{ .Name }}" value="{{ .ID }}"><label for="{{ .Name }}">{{ .Name }}</label></p>
+        {{ end }}
+
+    </form>

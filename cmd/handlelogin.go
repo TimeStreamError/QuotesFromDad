@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -45,7 +44,6 @@ func (apiCfg *APIConfig) handlerLogin(res http.ResponseWriter, req *http.Request
 
 	passwordMatches, err := auth.CheckPasswordHash(decodedPassword, queriedUser.HashedPassword)
 	if err != nil {
-		log.Printf("Error: %v", err)
 		respondWithError(res, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -75,8 +73,7 @@ func (apiCfg *APIConfig) handlerLogin(res http.ResponseWriter, req *http.Request
 	refreshTokenParams.ExpiresAt = time.Now().Add(time.Hour * 24 * 60)
 	dbRefreshToken, err := apiCfg.dbQueries.InsertRefreshToken(req.Context(), refreshTokenParams)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		respondWithError(res, http.StatusInternalServerError, "Something went wrong with refresh insertion")
+		respondWithError(res, http.StatusInternalServerError, err.Error())
 		return
 	}
 	returnUser.RefreshToken = dbRefreshToken.Token

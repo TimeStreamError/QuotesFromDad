@@ -11,11 +11,13 @@ func (apiCfg *APIConfig) handleRefreshTokenCheck(w http.ResponseWriter, r *http.
 	refreshToken, err := r.Cookie("refreshtoken")
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
 	}
 
 	dbRefreshToken, err := apiCfg.dbQueries.GetUserFromRefreshToken(r.Context(), refreshToken.Value)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
 	}
 
 	if !dbRefreshToken.ExpiresAt.After(time.Now()) || dbRefreshToken.RevokedAt.Valid {

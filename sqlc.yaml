@@ -21,3 +21,18 @@ sql:
             go_type:
               import: "github.com/google/uuid"
               type: "UUID"
+
+          - column: "tags.id"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+
+          - column: "quotes_tags_link.quote_id"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+
+          - column: "quotes_tags_link.tag_id"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"

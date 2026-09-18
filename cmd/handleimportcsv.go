@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/timestreamerror/capstone/internal/database"
 )
@@ -32,9 +34,13 @@ func importCSV(filename string) ([][]string, error) {
 }
 
 func (apiCfg *APIConfig) handleImportCSV(w http.ResponseWriter, r *http.Request) {
-	records, err := importCSV("./csv/test.csv")
+	filename := chi.URLParam(r, "filename")
+	filename = "./csv/" + filename
+	log.Println(filename)
+	records, err := importCSV(filename)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	for _, record := range records {
@@ -42,6 +48,7 @@ func (apiCfg *APIConfig) handleImportCSV(w http.ResponseWriter, r *http.Request)
 		dbParams.ID, err = uuid.NewUUID()
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
 		}
 		dbParams.CreatedAt = time.Now()
 		dbParams.UpdatedAt = time.Now()

@@ -9,7 +9,7 @@
     <body>
     <ul>
     {{ range . }}
-    <li><button class="edit-quote" data-id="{{ .ID }}">{{ .Quote }}</button><p>{{ .Author }}</p></li>
+    <li><button class="edit-quote" data-id="{{ .ID }}">"{{ .Quote }}"</button><p>{{if (.Author.Valid)}}-{{ .Author.String }}{{else}}{{end}}</p></li>
     {{ end }}
     </ul>
     </body>

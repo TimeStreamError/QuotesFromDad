@@ -9,6 +9,7 @@ func (apiCfg *APIConfig) handleGetRandom(w http.ResponseWriter, r *http.Request)
 	randomQuote, err := apiCfg.dbQueries.GetRandom(r.Context())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	author := ""
